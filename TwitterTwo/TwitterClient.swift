@@ -20,9 +20,9 @@ class TwitterClient: BDBOAuth1SessionManager {
     
     
     func login (success: () -> (), failure: (NSError) -> ()) {
-        TwitterClient.sharedInstance?.deauthorize()
+        deauthorize()
         
-        TwitterClient.sharedInstance?.fetchRequestToken(withPath: "oauth/request_token", method: "GET", callbackURL: URL(string: "twittertwo://oauth"), scope: nil, success: { (requestToken: BDBOAuth1Credential?) in
+        fetchRequestToken(withPath: "oauth/request_token", method: "GET", callbackURL: URL(string: "twittertwo://oauth"), scope: nil, success: { (requestToken: BDBOAuth1Credential?) in
                 let token = (requestToken?.token)!
                 print("Got Oauth token =\(token)")
                 let url = URL(string: "\(twitterBaseUrl)/oauth/authorize?oauth_token=\(token)")
