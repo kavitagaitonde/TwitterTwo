@@ -10,6 +10,12 @@ import UIKit
 
 class ComposeViewController: UIViewController {
 
+    @IBOutlet weak var profileImageView: UIImageView!
+    
+    @IBOutlet weak var tweetTextView: UITextView!
+    
+    @IBOutlet weak var characterCountLabel: UILabel!
+    
     override func viewDidLoad() {
         super.viewDidLoad()
 
@@ -32,4 +38,13 @@ class ComposeViewController: UIViewController {
     }
     */
 
+    @IBAction func onClose(_ sender: AnyObject) {
+        self.dismiss(animated: true, completion: nil)
+    }
+    
+    
+    @IBAction func onTweet(_ sender: AnyObject) {
+        
+    }
+    
 }
