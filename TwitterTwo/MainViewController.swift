@@ -46,7 +46,14 @@ class MainViewController: UIViewController, UITableViewDelegate, UITableViewData
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "TweetTableViewCell", for: indexPath) as! TweetTableViewCell
         let tweet = self.tweets[indexPath.row] as Tweet
-        cell.textLabel?.text = tweet.text
+        cell.tweetTextLabel?.text = tweet.text
+        cell.nameLabel?.text = tweet.user?.name
+        cell.screenNameLabel?.text = tweet.user?.screenName
+        if (tweet.user?.profileUrl != nil) {
+            cell.profileImageView.setImageWith((tweet.user?.profileUrl!)!)
+        } else {
+            cell.profileImageView.image = nil
+        }
         return cell
     }
 
@@ -54,15 +61,22 @@ class MainViewController: UIViewController, UITableViewDelegate, UITableViewData
 
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         if(segue.identifier == "composeTweetSegue") {
-            
+            let composeController = segue.destination as! ComposeViewController
         } else if (segue.identifier == "tweetDetailSegue") {
-            
+            let cell = sender as! TweetTableViewCell
+            if let indexPath = self.tableView.indexPath(for: cell) {
+                let detailsController = segue.destination as! DetailViewController
+                let tweet = self.tweets[indexPath.row] as Tweet
+                detailsController.tweet = tweet
+                self.tableView.deselectRow(at: indexPath, animated: true)
+            }
         }
     }
  
 
     
     @IBAction func onLogout(_ sender: AnyObject) {
+        TwitterClient.sharedInstance?.logout()
     }
     
 }

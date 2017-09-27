@@ -35,9 +35,15 @@ class TwitterClient: BDBOAuth1SessionManager {
             UIApplication.shared.open(url!, options: [:], completionHandler: {(result: Bool) in
             })
             }, failure: { (error: Error?) in
-                print("Error fetching Oauth token =\(error?.localizedDescription)")
+                print("Error fetching Oauth token =\((error?.localizedDescription)!)")
                 self.loginFailure?(error!)
         })
+    }
+    
+    func logout() {
+        deauthorize()
+        User.currentUser = nil
+        NotificationCenter.default.post(name: NSNotification.Name(rawValue: "UserLoggedOut"), object: nil)
     }
     
     func handleOpenUrl(url: URL) {
@@ -53,7 +59,7 @@ class TwitterClient: BDBOAuth1SessionManager {
                  self.loginFailure?(error!)   
             })
         }) { (error: Error?) in
-                print("Error fetching access token = \(error?.localizedDescription)")
+                print("Error fetching access token = \((error?.localizedDescription)!)")
         }
     }
     

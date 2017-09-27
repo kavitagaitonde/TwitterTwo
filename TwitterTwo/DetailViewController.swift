@@ -10,6 +10,8 @@ import UIKit
 
 class DetailViewController: UIViewController {
 
+    var tweet: Tweet?
+    
     override func viewDidLoad() {
         super.viewDidLoad()
 

@@ -8,7 +8,7 @@
 
 import UIKit
 
-class ComposeViewController: UIViewController {
+class ComposeViewController: UIViewController, UITextViewDelegate {
 
     @IBOutlet weak var profileImageView: UIImageView!
     
@@ -16,10 +16,28 @@ class ComposeViewController: UIViewController {
     
     @IBOutlet weak var characterCountLabel: UILabel!
     
+    @IBOutlet weak var nameLabel: UILabel!
+    
+    @IBOutlet weak var screenNameLabel: UILabel!
+    
+    var isPlaceholderText: Bool = true
+    
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        // Do any additional setup after loading the view.
+        self.profileImageView.layer.cornerRadius = 5.0
+        self.profileImageView.clipsToBounds = true
+        if (User.currentUser?.profileUrl != nil) {
+            self.profileImageView.setImageWith((User.currentUser?.profileUrl!)!)
+        } else {
+            self.profileImageView.image = nil
+        }
+        self.nameLabel.text = User.currentUser?.name
+        self.screenNameLabel.text = User.currentUser?.screenName
+        self.characterCountLabel.text = "140"
+        self.tweetTextView.text = "What would you like to tweet today?"
+        self.tweetTextView.textColor = UIColor.lightGray
+        self.tweetTextView.delegate = self
     }
 
     override func didReceiveMemoryWarning() {
@@ -27,6 +45,44 @@ class ComposeViewController: UIViewController {
         // Dispose of any resources that can be recreated.
     }
     
+    // MARK: - TextView Delegate
+    
+    func textViewDidBeginEditing(_: UITextView) {
+        if self.isPlaceholderText {
+            self.tweetTextView.text = nil
+            self.tweetTextView.textColor = UIColor.darkGray
+        }
+    }
+    
+    func textViewDidEndEditing(_ textView: UITextView) {
+        if self.tweetTextView.text.isEmpty {
+            self.tweetTextView.text = "What would you like to tweet today?"
+            self.tweetTextView.textColor = UIColor.lightGray
+            self.isPlaceholderText = true
+        }
+    }
+    
+    func textView(_ textView: UITextView, shouldChangeTextIn range: NSRange, replacementText text: String) -> Bool {
+        self.isPlaceholderText = false
+        let count = self.tweetTextView.text.characters.count
+        self.characterCountLabel.text = "\(140 - count)"
+        if (count >= 140) {
+            return false
+        } else {            
+            return true
+        }
+    }
+    
+    /*func textViewDidChange(_: UITextView) {
+        let count = self.tweetTextView.text.characters.count
+        if (count >= 140) {
+            self.te
+        } else {
+            self.characterCountLabel.text = "\(140 - count)"
+        }
+        
+    }*/
+
 
     /*
     // MARK: - Navigation
@@ -44,6 +100,8 @@ class ComposeViewController: UIViewController {
     
     
     @IBAction func onTweet(_ sender: AnyObject) {
+        
+        self.onClose(sender)
         
     }
     
