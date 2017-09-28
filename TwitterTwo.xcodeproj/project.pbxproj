@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		018020F61F7DAA3100DBA404 /* Status.swift in Sources */ = {isa = PBXBuildFile; fileRef = 018020F51F7DAA3100DBA404 /* Status.swift */; };
 		062CDA291F7CC0A10005A26F /* InfiniteScrollActivityView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 062CDA281F7CC0A10005A26F /* InfiniteScrollActivityView.swift */; };
 		068A98481F79CFA400DDF004 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 068A98471F79CFA400DDF004 /* AppDelegate.swift */; };
 		068A984D1F79CFA400DDF004 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 068A984B1F79CFA400DDF004 /* Main.storyboard */; };
@@ -24,6 +25,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		018020F51F7DAA3100DBA404 /* Status.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Status.swift; sourceTree = "<group>"; };
 		062CDA281F7CC0A10005A26F /* InfiniteScrollActivityView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = InfiniteScrollActivityView.swift; sourceTree = "<group>"; };
 		068A98441F79CFA400DDF004 /* TwitterTwo.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = TwitterTwo.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		068A98471F79CFA400DDF004 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -115,6 +117,7 @@
 			children = (
 				068A98691F7A220200DDF004 /* User.swift */,
 				068A986B1F7A221700DDF004 /* Tweet.swift */,
+				018020F51F7DAA3100DBA404 /* Status.swift */,
 			);
 			name = Models;
 			sourceTree = "<group>";
@@ -281,6 +284,7 @@
 				068A98701F7A243100DDF004 /* LoginViewController.swift in Sources */,
 				068A986E1F7A225800DDF004 /* TwitterClient.swift in Sources */,
 				068A98641F7A213300DDF004 /* DetailViewController.swift in Sources */,
+				018020F61F7DAA3100DBA404 /* Status.swift in Sources */,
 				068A98481F79CFA400DDF004 /* AppDelegate.swift in Sources */,
 				068A986A1F7A220200DDF004 /* User.swift in Sources */,
 				068A986C1F7A221700DDF004 /* Tweet.swift in Sources */,

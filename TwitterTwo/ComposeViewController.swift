@@ -100,8 +100,61 @@ class ComposeViewController: UIViewController, UITextViewDelegate {
     
     
     @IBAction func onTweet(_ sender: AnyObject) {
+        if((self.tweetTextView.text != nil) && self.tweetTextView.text.trimmingCharacters(in: .whitespacesAndNewlines).characters.count > 0){
+            TwitterClient.sharedInstance?.tweet(text: self.tweetTextView.text, success: {(tweet: Tweet) -> () in
+                
+                //success sending message
+                let alertController = UIAlertController(title: "Tweet", message: "Tweet sent successfully. Please click UnTweet to delete this tweet or OK if you are happy with your tweet", preferredStyle: .actionSheet)
+                // OK
+                let okAction = UIAlertAction(title: "OK", style: .cancel, handler: { (action:UIAlertAction!) in
+                    print ("OK")
+                    self.onClose(sender)
+                })
+                alertController.addAction(okAction)
+                
+                // UnTweet
+                let unTweetAction = UIAlertAction(title: "UnTweet", style: .destructive, handler: { (action:UIAlertAction!) in
+                    print ("UnTweet")
+                    TwitterClient.sharedInstance?.tweet(text: self.tweetTextView.text, success: {(tweet: Tweet) -> () in
+                        print ("success untweeting")
+                        self.onClose(sender)
+                    }, failure: { (error: Error) in
+                        print ("error tweeting")
+                        self.onClose(sender)
+                    })
+                })
+                alertController.addAction(unTweetAction)
+                
+                // Present Alert
+                self.present(alertController, animated: true, completion:nil)
+                
+                
+            }, failure: { (error: Error) in
+                //error sending message
+                let alertController = UIAlertController(title: "Tweet", message: "We are unable to post the tweet right now.", preferredStyle: .actionSheet)
+                // OK
+                let okAction = UIAlertAction(title: "OK", style: .cancel, handler: { (action:UIAlertAction!) in
+                    print ("OK")
+                })
+                alertController.addAction(okAction)
+                
+                // Present Alert
+                self.present(alertController, animated: true, completion:nil)
+            })
+        } else {
+            //nothing entered.
+            let alertController = UIAlertController(title: "Tweet", message: "Please write a message",
+                                                    preferredStyle: .actionSheet)
+            // OK
+            let okAction = UIAlertAction(title: "OK", style: .cancel, handler: { (action:UIAlertAction!) in
+                                                print ("OK")
+            })
+            alertController.addAction(okAction)
+            
+            // Present Alert
+            self.present(alertController, animated: true, completion:nil)
+        }
         
-        self.onClose(sender)
         
     }
     

@@ -63,6 +63,20 @@ class TwitterClient: BDBOAuth1SessionManager {
         }
     }
     
+    func userCredentials (success: @escaping (User) -> (),  failure: @escaping (Error) -> ()) {
+        get("1.1/account/verify_credentials.json", parameters: nil, progress: nil
+            , success: { (task: URLSessionDataTask?, response: Any?) in
+                let userDict = response as! NSDictionary
+                print("Account info - \(userDict)")
+                //create and save user
+                let user = User(dictionary: userDict)
+                success(user)
+        }, failure: { (task: URLSessionDataTask?, error: Error) in
+            print("Error fetching user account - \(error.localizedDescription)")
+            failure(error)
+        })
+    }
+
     func homeTimeLine (afterId: Int, success: @escaping ([Tweet]) -> (), failure: @escaping (Error) -> ()) {
         homeTimeLine(parameters: ["since_id": afterId], success: success, failure: failure)
     }
@@ -87,17 +101,88 @@ class TwitterClient: BDBOAuth1SessionManager {
         })
     }
     
-    func userCredentials (success: @escaping (User) -> (),  failure: @escaping (Error) -> ()) {
-        get("1.1/account/verify_credentials.json", parameters: nil, progress: nil
+    func favorite (tweetId: Int, success: @escaping (Tweet) -> (),  failure: @escaping (Error) -> ()) {
+        post("1.1/favorites/create.json", parameters: ["id": tweetId], progress: nil
             , success: { (task: URLSessionDataTask?, response: Any?) in
-                let userDict = response as! NSDictionary
-                print("Account info - \(userDict)")
-                //create and save user
-                let user = User(dictionary: userDict)
-                success(user)
-            }, failure: { (task: URLSessionDataTask?, error: Error) in
-                print("Error fetching user account - \(error.localizedDescription)")
-                failure(error)
+                let tweet = Tweet(dictionary: response as! NSDictionary)
+                print("Success favoriting tweet - \(tweet)")
+                success(tweet)
+        }, failure: { (task: URLSessionDataTask?, error: Error) in
+            print("Error favoriting tweet - \(error.localizedDescription)")
+            failure(error)
         })
     }
+    
+    func unFavorite (tweetId: Int, success: @escaping (Tweet) -> (),  failure: @escaping (Error) -> ()) {
+        post("1.1/favorites/destroy.json", parameters: ["id": tweetId], progress: nil
+            , success: { (task: URLSessionDataTask?, response: Any?) in
+                let tweet = Tweet(dictionary: response as! NSDictionary)
+                print("Success unfavoriting tweet - \(tweet)")
+                success(tweet)
+        }, failure: { (task: URLSessionDataTask?, error: Error) in
+            print("Error unfavoriting tweet - \(error.localizedDescription)")
+            failure(error)
+        })
+    }
+    
+    func getTweet (tweetId: Int, success: @escaping (Tweet) -> (),  failure: @escaping (Error) -> ()) {
+        post("1.1/statuses/show.json", parameters: nil, progress: nil
+            , success: { (task: URLSessionDataTask?, response: Any?) in
+                let tweet = Tweet(dictionary: response as! NSDictionary)
+                print("Success getting tweet - \(tweet)")
+                success(tweet)
+        }, failure: { (task: URLSessionDataTask?, error: Error) in
+            print("Error getting tweet - \(error.localizedDescription)")
+            failure(error)
+        })
+    }
+    
+    func tweet (text: String, success: @escaping (Tweet) -> (),  failure: @escaping (Error) -> ()) {
+        post("1.1/statuses/update.json", parameters: ["status": text], progress: nil
+            , success: { (task: URLSessionDataTask?, response: Any?) in
+                let tweet = Tweet(dictionary: response as! NSDictionary)
+                print("Success sending tweet - \(tweet)")
+                success(tweet)
+        }, failure: { (task: URLSessionDataTask?, error: Error) in
+            print("Error sending tweet - \(error.localizedDescription)")
+            failure(error)
+        })
+    }
+    
+    func unTweet (tweetId: Int, success: @escaping (Tweet) -> (),  failure: @escaping (Error) -> ()) {
+        post("1.1/statuses/destroy/\(tweetId).json", parameters: nil, progress: nil
+            , success: { (task: URLSessionDataTask?, response: Any?) in
+                let tweet = Tweet(dictionary: response as! NSDictionary)
+                print("Success sending untweet - \(tweet)")
+                success(tweet)
+        }, failure: { (task: URLSessionDataTask?, error: Error) in
+            print("Error sending untweet - \(error.localizedDescription)")
+            failure(error)
+        })
+    }
+    
+    func reTweet (tweetId: Int, success: @escaping (Tweet) -> (),  failure: @escaping (Error) -> ()) {
+        post("1.1/statuses/retweet/\(tweetId).json", parameters: tweet, progress: nil
+            , success: { (task: URLSessionDataTask?, response: Any?) in
+                let tweet = Tweet(dictionary: response as! NSDictionary)
+                print("Success sending retweet - \(tweet)")
+                success(tweet)
+        }, failure: { (task: URLSessionDataTask?, error: Error) in
+            print("Error sending retweet - \(error.localizedDescription)")
+            failure(error)
+        })
+    }
+    
+    func unReTweet (tweetId: Int, success: @escaping (Tweet) -> (),  failure: @escaping (Error) -> ()) {
+        post("1.1/statuses/unretweet/\(tweetId).json", parameters: tweet, progress: nil
+            , success: { (task: URLSessionDataTask?, response: Any?) in
+                let tweet = Tweet(dictionary: response as! NSDictionary)
+                print("Success sending unretweet - \(tweet)")
+                success(tweet)
+        }, failure: { (task: URLSessionDataTask?, error: Error) in
+            print("Error sending unretweet - \(error.localizedDescription)")
+            failure(error)
+        })
+    }
+
 }
