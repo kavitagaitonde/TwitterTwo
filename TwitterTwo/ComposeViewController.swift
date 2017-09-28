@@ -33,9 +33,9 @@ class ComposeViewController: UIViewController, UITextViewDelegate {
             self.profileImageView.image = nil
         }
         self.nameLabel.text = User.currentUser?.name
-        self.screenNameLabel.text = User.currentUser?.screenName
+        self.screenNameLabel.text = "@\((User.currentUser?.screenName)!)"
         self.characterCountLabel.text = "140"
-        self.tweetTextView.text = "What would you like to tweet today?"
+        self.tweetTextView.text = "What's on your mind today?"
         self.tweetTextView.textColor = UIColor.lightGray
         self.tweetTextView.delegate = self
     }

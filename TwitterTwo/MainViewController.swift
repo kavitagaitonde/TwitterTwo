@@ -17,14 +17,18 @@ class MainViewController: UIViewController, UITableViewDelegate, UITableViewData
     var infiniteScrollActivityView:InfiniteScrollActivityView?
     var isMoreDataLoading = false
     var tweets: [Tweet] = [Tweet]()
+    var tweetRecentId = 0
+    var tweetOldestId = 0
     var tweetOffset = 0
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        print ("******* Loading MainViewController *******")
 
         self.tableView.delegate = self
         self.tableView.dataSource = self
-        print ("******* Loading MainViewController *******")
+        self.tableView.estimatedRowHeight = 125
+        self.tableView.rowHeight = UITableViewAutomaticDimension
         
         // Add UI refreshing on pull down
         self.refreshControl = UIRefreshControl()
@@ -42,7 +46,7 @@ class MainViewController: UIViewController, UITableViewDelegate, UITableViewData
         self.tableView.contentInset = insets
 
         MBProgressHUD.showAdded(to: self.view, animated: true)
-        self.loadData()
+        self.loadData(true)
     }
     
     override func didReceiveMemoryWarning() {
@@ -51,17 +55,52 @@ class MainViewController: UIViewController, UITableViewDelegate, UITableViewData
     }
     
     func refreshControlAction(_ refreshControl: UIRefreshControl) {
-        self.tweetOffset = 0
-        self.loadData()
+        self.loadData(true)
     }
     
-    func loadData() {
+    func loadData(_ recent: Bool) {
         MBProgressHUD.hide(for: self.view, animated: true)
         self.infiniteScrollActivityView!.stopAnimating()
         self.refreshControl!.endRefreshing()
-        self.isMoreDataLoading = false
         
-        //fetch latest tweets
+        
+        let success = {(tweets: [Tweet]) in
+            print ("Tweets fetch successful")
+            if(recent) {//fetch latest tweets
+                if(self.tweetRecentId > 0) {
+                    self.tweets = tweets + self.tweets
+                } else {
+                    self.tweets = tweets
+                }
+            } else {
+                self.tweets += tweets
+            }
+            if(self.tweets.count > 0) {
+                self.tweetRecentId = self.tweets[0].id
+                self.tweetOldestId = self.tweets[self.tweets.count-1].id
+            } else {
+                self.tweetRecentId = 0
+                self.tweetOldestId = 0
+            }
+            self.tableView.reloadData()
+            self.isMoreDataLoading = false
+        }
+        
+        let failure = { (error: Error?) in
+            print("Error in fetching tweets")
+            self.isMoreDataLoading = false
+        }
+        
+        if(recent) {//fetch latest tweets
+            if(self.tweetRecentId > 0) {
+                TwitterClient.sharedInstance?.homeTimeLine(afterId: self.tweetRecentId, success: success, failure: failure)
+            } else {
+                TwitterClient.sharedInstance?.homeTimeLine(success: success, failure: failure)
+            }
+        } else { //older tweets
+            TwitterClient.sharedInstance?.homeTimeLine(beforeId: self.tweetOldestId, success: success, failure: failure)
+        }
+        
         TwitterClient.sharedInstance?.homeTimeLine(success: {(tweets: [Tweet]) in
             print ("Tweets fetch successful")
             if(self.tweetOffset > 0) {
@@ -77,6 +116,7 @@ class MainViewController: UIViewController, UITableViewDelegate, UITableViewData
     }
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        print("****** Total rows = \(self.tweets.count)")
         return self.tweets.count
     }
     
@@ -85,7 +125,7 @@ class MainViewController: UIViewController, UITableViewDelegate, UITableViewData
         let tweet = self.tweets[indexPath.row] as Tweet
         cell.tweetTextLabel?.text = tweet.text
         cell.nameLabel?.text = tweet.user?.name
-        cell.screenNameLabel?.text = tweet.user?.screenName
+        cell.screenNameLabel?.text = "@\((tweet.user?.screenName)!)"
         if (tweet.user?.profileUrl != nil) {
             cell.profileImageView.setImageWith((tweet.user?.profileUrl!)!)
         } else {
@@ -104,18 +144,16 @@ class MainViewController: UIViewController, UITableViewDelegate, UITableViewData
             let scrollOffsetThreshold = scrollViewContentHeight - tableView.bounds.size.height
             
             // When the user has scrolled past the threshold, start requesting
-            if(scrollView.contentOffset.y > scrollOffsetThreshold && tableView.isDragging) {
+            if(scrollView.contentOffset.y > scrollOffsetThreshold && self.tableView.isDragging) {
                 self.isMoreDataLoading = true
-                print("Loading more data.......offset = \(self.tweetOffset)")
+                print("Loading more data from oldest offset = \(self.tweetOldestId)")
                 
                 // Update position of loadingMoreView, and start loading indicator
                 let frame = CGRect(x: 0, y: tableView.contentSize.height, width: tableView.bounds.size.width, height: InfiniteScrollActivityView.defaultHeight)
                 infiniteScrollActivityView?.frame = frame
                 infiniteScrollActivityView!.startAnimating()
                 
-                self.tweetOffset = self.tweets.count
-                
-                self.loadData()
+                self.loadData(false)
             }
             
         }

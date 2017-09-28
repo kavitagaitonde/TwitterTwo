@@ -63,8 +63,20 @@ class TwitterClient: BDBOAuth1SessionManager {
         }
     }
     
+    func homeTimeLine (afterId: Int, success: @escaping ([Tweet]) -> (), failure: @escaping (Error) -> ()) {
+        homeTimeLine(parameters: ["since_id": afterId], success: success, failure: failure)
+    }
+    
+    func homeTimeLine (beforeId: Int, success: @escaping ([Tweet]) -> (), failure: @escaping (Error) -> ()) {
+        homeTimeLine(parameters: ["max_id": beforeId+1], success: success, failure: failure)
+    }
+    
     func homeTimeLine (success: @escaping ([Tweet]) -> (), failure: @escaping (Error) -> ()) {
-        get("1.1/statuses/home_timeline.json", parameters: nil, progress: nil
+        homeTimeLine(parameters: nil, success: success, failure: failure)
+    }
+    
+    func homeTimeLine (parameters: NSDictionary?, success: @escaping ([Tweet]) -> (), failure: @escaping (Error) -> ()) {
+        get("1.1/statuses/home_timeline.json", parameters: parameters, progress: nil
             , success: { (task: URLSessionDataTask?, response: Any?) in
                 print("Success fetching home timeline - ")
                 let dictionaries = response as! [NSDictionary]
