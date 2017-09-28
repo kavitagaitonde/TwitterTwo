@@ -7,12 +7,17 @@
 //
 
 import UIKit
+import MBProgressHUD
 
 class MainViewController: UIViewController, UITableViewDelegate, UITableViewDataSource {
 
     @IBOutlet weak var tableView: UITableView!
     
+    var refreshControl : UIRefreshControl?
+    var infiniteScrollActivityView:InfiniteScrollActivityView?
+    var isMoreDataLoading = false
     var tweets: [Tweet] = [Tweet]()
+    var tweetOffset = 0
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -20,6 +25,23 @@ class MainViewController: UIViewController, UITableViewDelegate, UITableViewData
         self.tableView.delegate = self
         self.tableView.dataSource = self
         print ("******* Loading MainViewController *******")
+        
+        // Add UI refreshing on pull down
+        self.refreshControl = UIRefreshControl()
+        self.refreshControl!.addTarget(self, action: #selector(refreshControlAction(_:)), for: UIControlEvents.valueChanged)
+        self.tableView.insertSubview(self.refreshControl!, at: 0)
+
+        // Set up Infinite Scroll loading indicator
+        let frame = CGRect(x: 0, y: tableView.contentSize.height, width: tableView.bounds.size.width, height: InfiniteScrollActivityView.defaultHeight)
+        infiniteScrollActivityView = InfiniteScrollActivityView(frame: frame)
+        infiniteScrollActivityView!.isHidden = true
+        self.tableView.addSubview(infiniteScrollActivityView!)
+        
+        var insets = self.tableView.contentInset
+        insets.bottom += InfiniteScrollActivityView.defaultHeight + 50
+        self.tableView.contentInset = insets
+
+        MBProgressHUD.showAdded(to: self.view, animated: true)
         self.loadData()
     }
     
@@ -28,10 +50,25 @@ class MainViewController: UIViewController, UITableViewDelegate, UITableViewData
         // Dispose of any resources that can be recreated.
     }
     
+    func refreshControlAction(_ refreshControl: UIRefreshControl) {
+        self.tweetOffset = 0
+        self.loadData()
+    }
+    
     func loadData() {
+        MBProgressHUD.hide(for: self.view, animated: true)
+        self.infiniteScrollActivityView!.stopAnimating()
+        self.refreshControl!.endRefreshing()
+        self.isMoreDataLoading = false
+        
         //fetch latest tweets
         TwitterClient.sharedInstance?.homeTimeLine(success: {(tweets: [Tweet]) in
             print ("Tweets fetch successful")
+            if(self.tweetOffset > 0) {
+                self.tweets += tweets
+            } else {
+                self.tweets = tweets
+            }
             self.tweets = tweets
             self.tableView.reloadData()
             }, failure: { (error: Error?) in
@@ -57,11 +94,38 @@ class MainViewController: UIViewController, UITableViewDelegate, UITableViewData
         return cell
     }
 
+    // MARK: - Scrollview
+    
+    func scrollViewDidScroll(_ scrollView: UIScrollView) {
+        if (!self.isMoreDataLoading) {
+            // Calculate the position of one screen length before the bottom of the results
+            let scrollViewContentHeight = tableView.contentSize.height
+            //actual hieght of the table filled in with content - height of 1 page of content
+            let scrollOffsetThreshold = scrollViewContentHeight - tableView.bounds.size.height
+            
+            // When the user has scrolled past the threshold, start requesting
+            if(scrollView.contentOffset.y > scrollOffsetThreshold && tableView.isDragging) {
+                self.isMoreDataLoading = true
+                print("Loading more data.......offset = \(self.tweetOffset)")
+                
+                // Update position of loadingMoreView, and start loading indicator
+                let frame = CGRect(x: 0, y: tableView.contentSize.height, width: tableView.bounds.size.width, height: InfiniteScrollActivityView.defaultHeight)
+                infiniteScrollActivityView?.frame = frame
+                infiniteScrollActivityView!.startAnimating()
+                
+                self.tweetOffset = self.tweets.count
+                
+                self.loadData()
+            }
+            
+        }
+    }
+
     // MARK: - Navigation
 
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         if(segue.identifier == "composeTweetSegue") {
-            let composeController = segue.destination as! ComposeViewController
+            //let composeController = segue.destination as! ComposeViewController
         } else if (segue.identifier == "tweetDetailSegue") {
             let cell = sender as! TweetTableViewCell
             if let indexPath = self.tableView.indexPath(for: cell) {

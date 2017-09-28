@@ -16,9 +16,15 @@ class TweetTableViewCell: UITableViewCell {
     @IBOutlet weak var activityTimestampLabel: UILabel!
     @IBOutlet weak var profileImageView: UIImageView!
     
+    @IBOutlet weak var retweetButton: UIButton!
+    @IBOutlet weak var replyButton: UIButton!
+    
+    @IBOutlet weak var favoriteButton: UIButton!
     override func awakeFromNib() {
         super.awakeFromNib()
-        // Initialization code
+        self.profileImageView.layer.cornerRadius = 5.0
+        self.profileImageView.clipsToBounds = true
+
     }
 
     override func setSelected(_ selected: Bool, animated: Bool) {
