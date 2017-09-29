@@ -123,9 +123,17 @@ class MainViewController: UIViewController, UITableViewDelegate, UITableViewData
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "TweetTableViewCell", for: indexPath) as! TweetTableViewCell
         let tweet = self.tweets[indexPath.row] as Tweet
+        cell.tweet = tweet
         cell.tweetTextLabel?.text = tweet.text
         cell.nameLabel?.text = tweet.user?.name
         cell.screenNameLabel?.text = "@\((tweet.user?.screenName)!)"
+        cell.activityTimestampLabel?.text = tweet.getElapsedTimeString()
+        cell.retweetCountLabel?.text = "\(tweet.retweetCount)"
+        cell.favoriteCountLabel?.text = "\(tweet.favoriteCount)"
+        cell.updateTweet = { (updatedTweet: Tweet) in
+            self.tweets[indexPath.row] = updatedTweet
+            tableView.reloadRows(at: [indexPath], with: .automatic)
+        }
         if (tweet.user?.profileUrl != nil) {
             cell.profileImageView.setImageWith((tweet.user?.profileUrl!)!)
         } else {

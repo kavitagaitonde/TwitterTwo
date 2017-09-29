@@ -16,10 +16,15 @@ class TweetTableViewCell: UITableViewCell {
     @IBOutlet weak var activityTimestampLabel: UILabel!
     @IBOutlet weak var profileImageView: UIImageView!
     
+    @IBOutlet weak var retweetLabel: UILabel!
     @IBOutlet weak var retweetButton: UIButton!
     @IBOutlet weak var replyButton: UIButton!
+    @IBOutlet weak var retweetCountLabel: UILabel!
+    @IBOutlet weak var favoriteButton: UIButton!    
+    @IBOutlet weak var favoriteCountLabel: UILabel!
+    var updateTweet : (Tweet) -> Void = { (tweet: Tweet) in }
+    var tweet: Tweet?
     
-    @IBOutlet weak var favoriteButton: UIButton!
     override func awakeFromNib() {
         super.awakeFromNib()
         self.profileImageView.layer.cornerRadius = 5.0
@@ -33,4 +38,30 @@ class TweetTableViewCell: UITableViewCell {
         // Configure the view for the selected state
     }
 
+    @IBAction func replyClicked(_ sender: Any) {
+    }
+    
+    @IBAction func retweetClicked(_ sender: Any) {
+    }
+    
+    @IBAction func favoriteClicked(_ sender: Any) {
+        if(tweet?.favorited)! {
+            TwitterClient.sharedInstance?.unFavorite(tweetId: (tweet?.id)!, success: {(tweet: Tweet) -> () in
+                print ("success unfavoriting")
+                self.updateTweet(tweet)
+            }, failure: { (error: Error) in
+                print ("error unfavoriting")
+            })
+        } else {
+            TwitterClient.sharedInstance?.favorite(tweetId: (tweet?.id)!, success: {(tweet: Tweet) -> () in
+                print ("success favoriting")
+                self.updateTweet(tweet)
+            }, failure: { (error: Error) in
+                print ("error favoriting")
+            })
+        }
+        
+    }
+    
+    
 }

@@ -9,6 +9,7 @@
 import Foundation
 
 class User: NSObject {
+    var id: Int
     var name: String?
     var screenName: String?
     var profileUrl: URL?
@@ -16,15 +17,20 @@ class User: NSObject {
     var followersCount: Int?
     //let following: [User]
     var followingCount: Int?
+    var tweetsCount: Int?
+    var favoritesCount: Int?
     var userDictionary: NSDictionary?
     
     init(dictionary: NSDictionary) {
         userDictionary = dictionary
         
+        id = dictionary["id"] as! Int
         name = dictionary["name"] as? String
         screenName = dictionary["screen_name"] as? String
         followersCount = dictionary["followers_count"] as? Int
         followingCount = dictionary["friends_count"] as? Int
+        tweetsCount = dictionary["statuses_count"] as? Int
+        favoritesCount = dictionary["favourites_count"] as? Int
         let profileUrlString = dictionary["profile_image_url_https"] as? String
         if let profileUrlString = profileUrlString {
             profileUrl = URL(string: profileUrlString)

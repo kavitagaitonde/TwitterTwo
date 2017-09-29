@@ -149,7 +149,7 @@ class TwitterClient: BDBOAuth1SessionManager {
         })
     }
     
-    func unTweet (tweetId: Int, success: @escaping (Tweet) -> (),  failure: @escaping (Error) -> ()) {
+    func untweet (tweetId: Int, success: @escaping (Tweet) -> (),  failure: @escaping (Error) -> ()) {
         post("1.1/statuses/destroy/\(tweetId).json", parameters: nil, progress: nil
             , success: { (task: URLSessionDataTask?, response: Any?) in
                 let tweet = Tweet(dictionary: response as! NSDictionary)
@@ -161,7 +161,7 @@ class TwitterClient: BDBOAuth1SessionManager {
         })
     }
     
-    func reTweet (tweetId: Int, success: @escaping (Tweet) -> (),  failure: @escaping (Error) -> ()) {
+    func retweet (tweetId: Int, success: @escaping (Tweet) -> (),  failure: @escaping (Error) -> ()) {
         post("1.1/statuses/retweet/\(tweetId).json", parameters: tweet, progress: nil
             , success: { (task: URLSessionDataTask?, response: Any?) in
                 let tweet = Tweet(dictionary: response as! NSDictionary)
@@ -173,7 +173,7 @@ class TwitterClient: BDBOAuth1SessionManager {
         })
     }
     
-    func unReTweet (tweetId: Int, success: @escaping (Tweet) -> (),  failure: @escaping (Error) -> ()) {
+    func unretweet (tweetId: Int, success: @escaping (Tweet) -> (),  failure: @escaping (Error) -> ()) {
         post("1.1/statuses/unretweet/\(tweetId).json", parameters: tweet, progress: nil
             , success: { (task: URLSessionDataTask?, response: Any?) in
                 let tweet = Tweet(dictionary: response as! NSDictionary)

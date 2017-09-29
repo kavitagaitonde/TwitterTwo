@@ -104,7 +104,7 @@ class ComposeViewController: UIViewController, UITextViewDelegate {
             TwitterClient.sharedInstance?.tweet(text: self.tweetTextView.text, success: {(tweet: Tweet) -> () in
                 
                 //success sending message
-                let alertController = UIAlertController(title: "Tweet", message: "Tweet sent successfully. Please click UnTweet to delete this tweet or OK if you are happy with your tweet", preferredStyle: .actionSheet)
+                let alertController = UIAlertController(title: "Tweet", message: "Tweet sent successfully. Click Untweet to delete this tweet or OK to continue", preferredStyle: .actionSheet)
                 // OK
                 let okAction = UIAlertAction(title: "OK", style: .cancel, handler: { (action:UIAlertAction!) in
                     print ("OK")
@@ -112,18 +112,18 @@ class ComposeViewController: UIViewController, UITextViewDelegate {
                 })
                 alertController.addAction(okAction)
                 
-                // UnTweet
-                let unTweetAction = UIAlertAction(title: "UnTweet", style: .destructive, handler: { (action:UIAlertAction!) in
-                    print ("UnTweet")
-                    TwitterClient.sharedInstance?.tweet(text: self.tweetTextView.text, success: {(tweet: Tweet) -> () in
+                // Untweet
+                let untweetAction = UIAlertAction(title: "Untweet", style: .destructive, handler: { (action:UIAlertAction!) in
+                    print ("Untweet id = \(tweet.id)")
+                    TwitterClient.sharedInstance?.untweet(tweetId: tweet.id, success: {(tweet: Tweet) -> () in
                         print ("success untweeting")
                         self.onClose(sender)
                     }, failure: { (error: Error) in
-                        print ("error tweeting")
+                        print ("error untweeting")
                         self.onClose(sender)
                     })
                 })
-                alertController.addAction(unTweetAction)
+                alertController.addAction(untweetAction)
                 
                 // Present Alert
                 self.present(alertController, animated: true, completion:nil)
