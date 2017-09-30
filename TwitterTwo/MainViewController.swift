@@ -141,9 +141,14 @@ class MainViewController: UIViewController, UITableViewDelegate, UITableViewData
             cell.profileImageView.image = nil
         }
         if tweet.favorited {
-            cell.favoriteButton.setImage(UIImage(named: "favorited"), for: .selected)
+            cell.favoriteButton.isSelected = true
         } else {
-            cell.favoriteButton.setImage(UIImage(named: "favorite"), for: .normal)
+            cell.favoriteButton.isSelected = false
+        }
+        if tweet.retweeted {
+            cell.retweetButton.isSelected = true
+        } else {
+            cell.retweetButton.isSelected = false
         }
         return cell
     }

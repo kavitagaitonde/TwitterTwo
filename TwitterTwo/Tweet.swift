@@ -10,6 +10,10 @@ import Foundation
 
 class Tweet: NSObject {
     
+    static let serverDateFormat = "EEE MMM d HH:mm:ss Z y"
+    static let friendlyDateFormat = "m/d/y, HH:mm a"
+    static let shortDateFormat = "d MMM"
+
     var id: Int
     var text: String?
     var timestamp: Date?
@@ -30,7 +34,7 @@ class Tweet: NSObject {
         favoriteCount = (dictionary["favorite_count"] as? Int) ?? 0
         let timeString = dictionary["created_at"] as? String
         if let timeString = timeString {
-            Tweet.formatter.dateFormat = "EEE MMM d HH:mm:ss Z y"
+            Tweet.formatter.dateFormat = Tweet.serverDateFormat
             timestamp = Tweet.formatter.date(from: timeString)
         }
         let userDict = dictionary["user"] as? NSDictionary
@@ -60,7 +64,7 @@ class Tweet: NSObject {
             return "\(times[0])m"
         case 3:
             if Int(times[0])! >= 24 {
-                Tweet.formatter.dateFormat = "d MMM"
+                Tweet.formatter.dateFormat = Tweet.shortDateFormat
                 return Tweet.formatter.string(from: timestamp!)
             } else {
                 return "\(times[0])h"
@@ -69,21 +73,10 @@ class Tweet: NSObject {
             return ""
             
         }
-        /*
-        let interval = (self.timestamp?.timeIntervalSinceNow)! / 1000
-        let hours = interval / 3600
-        if hours > 24 {
-            return ""
-        } else if hours > 0 {
-            return "\(hours)h"
-        } else {
-            let mins = (interval / 60 ) % 60
-            if mins > 0 {
-                return "\(hours)h"
-            } else {
-                let seconds = interval % 60;
-            }
-        }*/
-        
+    }
+    
+    func getFriendlyDateString() -> String {
+        Tweet.formatter.dateFormat = Tweet.friendlyDateFormat
+        return Tweet.formatter.string(from: timestamp!)
     }
 }

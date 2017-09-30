@@ -38,8 +38,6 @@ class TweetTableViewCell: UITableViewCell {
         // Configure the view for the selected state
     }
 
-    @IBAction func replyClicked(_ sender: Any) {
-    }
     
     @IBAction func retweetClicked(_ sender: Any) {
         if(tweet?.retweeted)! {
