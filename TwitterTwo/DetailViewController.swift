@@ -7,13 +7,14 @@
 //
 
 import UIKit
+import TTTAttributedLabel
 
-class DetailViewController: UIViewController {
+class DetailViewController: UIViewController, TTTAttributedLabelDelegate {
 
     @IBOutlet weak var retweetImageView: UIImageView!
     @IBOutlet weak var retweetLabel: UILabel!
     @IBOutlet weak var profileImageView: UIImageView!
-    @IBOutlet weak var tweetLabel: UILabel!
+    @IBOutlet weak var tweetLabel: TTTAttributedLabel!
     @IBOutlet weak var nameLabel: UILabel!
     @IBOutlet weak var screenLabel: UILabel!
     @IBOutlet weak var timeLabel: UILabel!
@@ -26,7 +27,6 @@ class DetailViewController: UIViewController {
     
     var tweet: Tweet?
     var updateTweet : (Tweet) -> Void = { (tweet: Tweet) in }
-    var shouldUpdateTweet = false
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -34,6 +34,8 @@ class DetailViewController: UIViewController {
         let user = tweet?.user
         self.nameLabel.text = user?.name
         self.screenLabel.text = "@\((user?.screenName)!)"
+        self.tweetLabel.enabledTextCheckingTypes =  NSTextCheckingAllTypes
+        self.tweetLabel.delegate = self
         self.tweetLabel.text = tweet?.text
         self.timeLabel.text = tweet?.getFriendlyDateString()
         self.retweetCountLabel.text = "\((tweet?.retweetCount)!)"
@@ -60,11 +62,6 @@ class DetailViewController: UIViewController {
         }
     }
     
-    override func viewWillDisappear(_ animated: Bool) {
-        super.viewWillDisappear(animated)
-        self.updateTweet(self.tweet!)
-    }
-
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
@@ -75,7 +72,7 @@ class DetailViewController: UIViewController {
             TwitterClient.sharedInstance?.unFavorite(tweetId: (self.tweet?.id)!, success: {(tweet: Tweet) -> () in
                 print ("success unfavoriting")
                 self.tweet = tweet
-                self.shouldUpdateTweet = true
+                self.updateTweet(self.tweet!)
                 self.favoriteButton.isSelected = false
                 self.favoriteCountLabel.text = "\(tweet.favoriteCount)"
             }, failure: { (error: Error) in
@@ -85,7 +82,7 @@ class DetailViewController: UIViewController {
             TwitterClient.sharedInstance?.favorite(tweetId: (self.tweet?.id)!, success: {(tweet: Tweet) -> () in
                 print ("success favoriting")
                 self.tweet = tweet
-                self.shouldUpdateTweet = true
+                self.updateTweet(self.tweet!)
                 self.favoriteButton.isSelected = true
                 self.favoriteCountLabel.text = "\(tweet.favoriteCount)"
             }, failure: { (error: Error) in
@@ -99,11 +96,8 @@ class DetailViewController: UIViewController {
         if (self.tweet?.retweeted)! {
             TwitterClient.sharedInstance?.unretweet(tweetId: (self.tweet?.id)!, success: {(tweet: Tweet) -> () in
                 print ("success unretweeting")
-                //BUGBUG: Bug in Twitter its not redcing the retweet count upon unretweeting
-                tweet.retweetCount = tweet.retweetCount - 1
-                tweet.retweeted = false
                 self.tweet = tweet
-                self.shouldUpdateTweet = true
+                self.updateTweet(self.tweet!)
                 self.retweetButton.isSelected = false
                 self.retweetCountLabel.text = "\(tweet.retweetCount-1)"
             }, failure: { (error: Error) in
@@ -113,7 +107,7 @@ class DetailViewController: UIViewController {
             TwitterClient.sharedInstance?.retweet(tweetId: (self.tweet?.id)!, success: {(tweet: Tweet) -> () in
                 print ("success retweeting")
                 self.tweet = tweet
-                self.shouldUpdateTweet = true
+                self.updateTweet(self.tweet!)
                 self.retweetButton.isSelected = true
                 self.retweetCountLabel.text = "\(tweet.retweetCount)"
             }, failure: { (error: Error) in
@@ -132,9 +126,20 @@ class DetailViewController: UIViewController {
             composeController.replyToTweet = self.tweet
             composeController.addTweet = { (addedTweet: Tweet) in
                 self.tweet = addedTweet
-                self.shouldUpdateTweet = true
+                self.updateTweet(self.tweet!)
             }
         }
     }
 
+    // MARK: - TTTAttributedLabel
+    
+    func attributedLabel(_ label: TTTAttributedLabel!, didSelectLinkWith url: URL!) {
+        UIApplication.shared.open(url, options: [:], completionHandler: nil)
+    }
+    
+    func attributedLabel(_ label: TTTAttributedLabel!, didSelectLinkWithPhoneNumber phoneNumber: String!) {
+        if let url = URL(string: "tel://\(phoneNumber!)") {
+            UIApplication.shared.open(url, options: [:], completionHandler: nil)
+        }
+    }
 }

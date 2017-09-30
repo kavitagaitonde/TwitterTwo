@@ -9,4 +9,5 @@ target 'TwitterTwo' do
 pod 'AFNetworking', '~> 3.0'
 pod 'MBProgressHUD'
 pod 'BDBOAuth1Manager', '~> 2.0.0'
+pod 'TTTAttributedLabel'
 end

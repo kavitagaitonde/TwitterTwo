@@ -177,9 +177,21 @@ class TwitterClient: BDBOAuth1SessionManager {
         post("1.1/statuses/unretweet/\(tweetId).json", parameters: nil, progress: nil
             , success: { (task: URLSessionDataTask?, response: Any?) in
                 let tweet = Tweet(dictionary: response as! NSDictionary)
-                print("Success sending unretweet - \(tweet)")
-                success(tweet)
-        }, failure: { (task: URLSessionDataTask?, error: Error) in
+                //BUGBUG: Bug in Twitter its not redcing the retweet count, and setting retweeted to false upon unretweeting
+                if tweet.retweeted {
+                    self.getTweet(tweetId: tweet.id, success: { (tweet: Tweet) in
+                        success(tweet)
+                    }, failure: { (error: Error) in
+                        //last resort
+                        tweet.retweeted = false
+                        tweet.retweetCount = tweet.retweetCount - 1
+                        success(tweet)
+                    })
+                } else {
+                    print("Success sending unretweet - \(tweet)")
+                    success(tweet)
+                }
+         }, failure: { (task: URLSessionDataTask?, error: Error) in
             print("Error sending unretweet - \(error.localizedDescription)")
             failure(error)
         })

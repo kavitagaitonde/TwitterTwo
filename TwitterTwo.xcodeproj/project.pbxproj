@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		018020F61F7DAA3100DBA404 /* Status.swift in Sources */ = {isa = PBXBuildFile; fileRef = 018020F51F7DAA3100DBA404 /* Status.swift */; };
+		018020FC1F80523E00DBA404 /* MeViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 018020FB1F80523E00DBA404 /* MeViewController.swift */; };
 		062CDA291F7CC0A10005A26F /* InfiniteScrollActivityView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 062CDA281F7CC0A10005A26F /* InfiniteScrollActivityView.swift */; };
 		068A98481F79CFA400DDF004 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 068A98471F79CFA400DDF004 /* AppDelegate.swift */; };
 		068A984D1F79CFA400DDF004 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 068A984B1F79CFA400DDF004 /* Main.storyboard */; };
@@ -26,6 +27,7 @@
 
 /* Begin PBXFileReference section */
 		018020F51F7DAA3100DBA404 /* Status.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Status.swift; sourceTree = "<group>"; };
+		018020FB1F80523E00DBA404 /* MeViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MeViewController.swift; sourceTree = "<group>"; };
 		062CDA281F7CC0A10005A26F /* InfiniteScrollActivityView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = InfiniteScrollActivityView.swift; sourceTree = "<group>"; };
 		068A98441F79CFA400DDF004 /* TwitterTwo.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = TwitterTwo.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		068A98471F79CFA400DDF004 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -99,6 +101,7 @@
 				068A98631F7A213300DDF004 /* DetailViewController.swift */,
 				068A98651F7A214700DDF004 /* ComposeViewController.swift */,
 				068A986F1F7A243100DDF004 /* LoginViewController.swift */,
+				018020FB1F80523E00DBA404 /* MeViewController.swift */,
 			);
 			name = Controllers;
 			sourceTree = "<group>";
@@ -270,7 +273,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
+			shellScript = "diff \"${PODS_ROOT}/../Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n";
 			showEnvVarsInLog = 0;
 		};
 /* End PBXShellScriptBuildPhase section */
@@ -286,6 +289,7 @@
 				068A98641F7A213300DDF004 /* DetailViewController.swift in Sources */,
 				018020F61F7DAA3100DBA404 /* Status.swift in Sources */,
 				068A98481F79CFA400DDF004 /* AppDelegate.swift in Sources */,
+				018020FC1F80523E00DBA404 /* MeViewController.swift in Sources */,
 				068A986A1F7A220200DDF004 /* User.swift in Sources */,
 				068A986C1F7A221700DDF004 /* Tweet.swift in Sources */,
 				068A98621F7A210B00DDF004 /* MainViewController.swift in Sources */,

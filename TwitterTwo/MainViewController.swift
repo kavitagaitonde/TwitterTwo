@@ -29,6 +29,7 @@ class MainViewController: UIViewController, UITableViewDelegate, UITableViewData
         self.tableView.dataSource = self
         self.tableView.estimatedRowHeight = 125
         self.tableView.rowHeight = UITableViewAutomaticDimension
+        self.tableView.scrollsToTop = true
         
         // Add UI refreshing on pull down
         self.refreshControl = UIRefreshControl()
@@ -67,11 +68,11 @@ class MainViewController: UIViewController, UITableViewDelegate, UITableViewData
         let success = {(tweets: [Tweet]) in
             print ("Tweets fetch successful")
             if(recent) {//fetch latest tweets
-                if(self.tweetRecentId > 0) {
+                /*if(self.tweetRecentId > 0) {
                     self.tweets = tweets + self.tweets
-                } else {
+                } else {*/
                     self.tweets = tweets
-                }
+                //}
             } else {
                 self.tweets += tweets
             }
@@ -92,27 +93,14 @@ class MainViewController: UIViewController, UITableViewDelegate, UITableViewData
         }
         
         if(recent) {//fetch latest tweets
-            if(self.tweetRecentId > 0) {
+            /*if(self.tweetRecentId > 0) {
                 TwitterClient.sharedInstance?.homeTimeLine(afterId: self.tweetRecentId, success: success, failure: failure)
-            } else {
+            } else {*/
                 TwitterClient.sharedInstance?.homeTimeLine(success: success, failure: failure)
-            }
+            //}
         } else { //older tweets
             TwitterClient.sharedInstance?.homeTimeLine(beforeId: self.tweetOldestId, success: success, failure: failure)
         }
-        
-        /*TwitterClient.sharedInstance?.homeTimeLine(success: {(tweets: [Tweet]) in
-            print ("Tweets fetch successful")
-            if(self.tweetOffset > 0) {
-                self.tweets += tweets
-            } else {
-                self.tweets = tweets
-            }
-            self.tweets = tweets
-            self.tableView.reloadData()
-            }, failure: { (error: Error?) in
-                print("Error in fetching tweets")
-        })*/
     }
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
@@ -123,44 +111,10 @@ class MainViewController: UIViewController, UITableViewDelegate, UITableViewData
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "TweetTableViewCell", for: indexPath) as! TweetTableViewCell
         let tweet = self.tweets[indexPath.row] as Tweet
-        cell.tweet = tweet
-        cell.tweetTextLabel?.text = tweet.text
-        cell.nameLabel?.text = tweet.user?.name
-        cell.screenNameLabel?.text = "@\((tweet.user?.screenName)!)"
-        cell.activityTimestampLabel?.text = tweet.getElapsedTimeString()
-        cell.retweetCountLabel?.text = "\(tweet.retweetCount)"
-        cell.favoriteCountLabel?.text = "\(tweet.favoriteCount)"
-        cell.replyButton.tag = indexPath.row
+        cell.prepareCellFor(tweet: tweet, indexPath: indexPath)
         cell.updateTweet = { (updatedTweet: Tweet) in
             self.tweets[indexPath.row] = updatedTweet
             tableView.reloadRows(at: [indexPath], with: .automatic)
-        }
-        if (tweet.user?.profileUrl != nil) {
-            cell.profileImageView.setImageWith((tweet.user?.profileUrl!)!)
-        } else {
-            cell.profileImageView.image = nil
-        }
-        if tweet.favorited {
-            cell.favoriteButton.isSelected = true
-        } else {
-            cell.favoriteButton.isSelected = false
-        }
-        if tweet.retweeted {
-            cell.retweetButton.isSelected = true
-        } else {
-            cell.retweetButton.isSelected = false
-        }
-        if tweet.retweetedByUser != nil {
-            if User.currentUser?.id == tweet.retweetedByUser?.id {
-                cell.retweetLabel.text = "You Retweeted"
-            } else {
-                cell.retweetLabel.text = "\((tweet.retweetedByUser?.name)!) Retweeted"
-            }
-            cell.retweetLabel.isHidden = false
-            cell.retweetImageView.isHidden = false
-        } else {
-            cell.retweetLabel.isHidden = true
-            cell.retweetImageView.isHidden = true
         }
         return cell
     }
