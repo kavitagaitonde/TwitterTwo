@@ -45,6 +45,19 @@ class DetailViewController: UIViewController {
         } else {
             self.profileImageView.image = nil
         }
+        let retweetedByUser = self.tweet?.retweetedByUser
+        if retweetedByUser != nil {
+            if User.currentUser?.id == retweetedByUser?.id {
+                self.retweetLabel.text = "You Retweeted"
+            } else {
+                self.retweetLabel.text = "\((retweetedByUser?.name)!) Retweeted"
+            }
+            self.retweetLabel.isHidden = false
+            self.retweetImageView.isHidden = false
+        } else {
+            self.retweetLabel.isHidden = true
+            self.retweetImageView.isHidden = true
+        }
     }
     
     override func viewWillDisappear(_ animated: Bool) {
@@ -86,10 +99,13 @@ class DetailViewController: UIViewController {
         if (self.tweet?.retweeted)! {
             TwitterClient.sharedInstance?.unretweet(tweetId: (self.tweet?.id)!, success: {(tweet: Tweet) -> () in
                 print ("success unretweeting")
+                //BUGBUG: Bug in Twitter its not redcing the retweet count upon unretweeting
+                tweet.retweetCount = tweet.retweetCount - 1
+                tweet.retweeted = false
                 self.tweet = tweet
                 self.shouldUpdateTweet = true
                 self.retweetButton.isSelected = false
-                self.retweetCountLabel.text = "\(tweet.retweetCount)"
+                self.retweetCountLabel.text = "\(tweet.retweetCount-1)"
             }, failure: { (error: Error) in
                 print ("error unretweeting")
             })

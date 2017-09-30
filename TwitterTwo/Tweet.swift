@@ -11,7 +11,7 @@ import Foundation
 class Tweet: NSObject {
     
     static let serverDateFormat = "EEE MMM d HH:mm:ss Z y"
-    static let friendlyDateFormat = "m/d/y, HH:mm a"
+    static let friendlyDateFormat = "m/d/y, h:mm a"
     static let shortDateFormat = "d MMM"
 
     var id: Int
@@ -22,23 +22,34 @@ class Tweet: NSObject {
     var favorited: Bool
     var retweeted: Bool
     var user: User?
-    
+    var retweetedByUser: User?
     static let formatter = DateFormatter()
     
     init(dictionary: NSDictionary) {
-        id = dictionary["id"] as! Int
-        text = dictionary["text"] as? String
-        favorited = dictionary["favorited"] as! Bool
-        retweeted = dictionary["retweeted"] as! Bool
-        retweetCount = (dictionary["retweet_count"] as? Int) ?? 0
-        favoriteCount = (dictionary["favorite_count"] as? Int) ?? 0
-        let timeString = dictionary["created_at"] as? String
+        var dict : NSDictionary
+        let retweeted_status = dictionary["retweeted_status"] as? NSDictionary
+        if retweeted_status != nil { //check if this is a retweet
+            dict = retweeted_status!
+            let userDict = dictionary["user"] as? NSDictionary
+            retweetedByUser = User(dictionary: userDict!)
+        }else {
+            dict = dictionary
+            retweetedByUser = nil
+        }
+        id = dict["id"] as! Int
+        text = dict["text"] as? String
+        favorited = dict["favorited"] as! Bool
+        retweeted = dict["retweeted"] as! Bool
+        retweetCount = (dict["retweet_count"] as? Int) ?? 0
+        favoriteCount = (dict["favorite_count"] as? Int) ?? 0
+        let timeString = dict["created_at"] as? String
         if let timeString = timeString {
             Tweet.formatter.dateFormat = Tweet.serverDateFormat
             timestamp = Tweet.formatter.date(from: timeString)
         }
-        let userDict = dictionary["user"] as? NSDictionary
+        let userDict = dict["user"] as? NSDictionary
         user = User(dictionary: userDict!)
+        
         
     }
     

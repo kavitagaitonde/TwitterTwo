@@ -150,6 +150,18 @@ class MainViewController: UIViewController, UITableViewDelegate, UITableViewData
         } else {
             cell.retweetButton.isSelected = false
         }
+        if tweet.retweetedByUser != nil {
+            if User.currentUser?.id == tweet.retweetedByUser?.id {
+                cell.retweetLabel.text = "You Retweeted"
+            } else {
+                cell.retweetLabel.text = "\((tweet.retweetedByUser?.name)!) Retweeted"
+            }
+            cell.retweetLabel.isHidden = false
+            cell.retweetImageView.isHidden = false
+        } else {
+            cell.retweetLabel.isHidden = true
+            cell.retweetImageView.isHidden = true
+        }
         return cell
     }
 
@@ -206,6 +218,10 @@ class MainViewController: UIViewController, UITableViewDelegate, UITableViewData
                     let detailsController = segue.destination as! DetailViewController
                     let tweet = self.tweets[indexPath.row] as Tweet
                     detailsController.tweet = tweet
+                    detailsController.updateTweet = { (updatedTweet: Tweet) in
+                        self.tweets[indexPath.row] = updatedTweet
+                        self.tableView.reloadRows(at: [indexPath], with: .automatic)
+                    }
                     self.tableView.deselectRow(at: indexPath, animated: true)
                 }
             }

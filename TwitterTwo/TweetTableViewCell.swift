@@ -16,6 +16,7 @@ class TweetTableViewCell: UITableViewCell {
     @IBOutlet weak var activityTimestampLabel: UILabel!
     @IBOutlet weak var profileImageView: UIImageView!
     
+    @IBOutlet weak var retweetImageView: UIImageView!
     @IBOutlet weak var retweetLabel: UILabel!
     @IBOutlet weak var retweetButton: UIButton!
     @IBOutlet weak var replyButton: UIButton!
@@ -43,6 +44,9 @@ class TweetTableViewCell: UITableViewCell {
         if(tweet?.retweeted)! {
             TwitterClient.sharedInstance?.unretweet(tweetId: (tweet?.id)!, success: {(tweet: Tweet) -> () in
                 print ("success unfavoriting")
+                //BUGBUG: Bug in Twitter its not redcing the retweet count upon unretweeting
+                tweet.retweetCount = tweet.retweetCount - 1
+                tweet.retweeted = false
                 self.updateTweet(tweet)
             }, failure: { (error: Error) in
                 print ("error unfavoriting")

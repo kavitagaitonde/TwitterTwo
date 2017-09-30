@@ -26,6 +26,8 @@ class ComposeViewController: UIViewController, UITextViewDelegate {
     
     @IBOutlet weak var replyLabel: UILabel!
     
+    @IBOutlet weak var quotesTextView: UITextView!
+    
     var addTweet : (Tweet) -> Void = { (tweet: Tweet) in }
     var composeMode = ComposeMode.tweet
     var replyToTweet: Tweet?
@@ -42,14 +44,16 @@ class ComposeViewController: UIViewController, UITextViewDelegate {
             self.screenNameLabel.isHidden = false
             self.replyLabel.isHidden = true
             self.characterCountLabel.text = "140"
+            self.quotesTextView.isHidden = false
         } else {
             user = replyToTweet?.user
-            self.tweetTextView.text = "@\((user?.screenName)!)"
+            self.tweetTextView.text = "@\((user?.screenName)! )"
             self.nameLabel.isHidden = true
             self.screenNameLabel.isHidden = true
             self.replyLabel.isHidden = false
             self.isPlaceholderText = false
             self.characterCountLabel.text = "\(getRemainingCharsCount())"
+            self.quotesTextView.isHidden = true
         }
         self.profileImageView.layer.cornerRadius = 5.0
         self.profileImageView.clipsToBounds = true
