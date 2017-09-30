@@ -60,8 +60,7 @@ class ComposeViewController: UIViewController, UITextViewDelegate {
         }
         self.nameLabel.text = user?.name
         self.screenNameLabel.text = "@\((user?.screenName)!)"
-        self.replyLabel.text = "In reply to @\((user?.name)!)"
-        self.characterCountLabel.text = "140"
+        self.replyLabel.text = "In reply to \((user?.name)!)"
         self.tweetTextView.textColor = UIColor.lightGray
         self.tweetTextView.delegate = self
     }
