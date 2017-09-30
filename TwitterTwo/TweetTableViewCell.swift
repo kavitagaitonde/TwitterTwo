@@ -42,6 +42,21 @@ class TweetTableViewCell: UITableViewCell {
     }
     
     @IBAction func retweetClicked(_ sender: Any) {
+        if(tweet?.retweeted)! {
+            TwitterClient.sharedInstance?.unretweet(tweetId: (tweet?.id)!, success: {(tweet: Tweet) -> () in
+                print ("success unfavoriting")
+                self.updateTweet(tweet)
+            }, failure: { (error: Error) in
+                print ("error unfavoriting")
+            })
+        } else {
+            TwitterClient.sharedInstance?.retweet(tweetId: (tweet?.id)!, success: {(tweet: Tweet) -> () in
+                print ("success favoriting")
+                self.updateTweet(tweet)
+            }, failure: { (error: Error) in
+                print ("error favoriting")
+            })
+        }
     }
     
     @IBAction func favoriteClicked(_ sender: Any) {

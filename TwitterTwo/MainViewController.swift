@@ -19,7 +19,7 @@ class MainViewController: UIViewController, UITableViewDelegate, UITableViewData
     var tweets: [Tweet] = [Tweet]()
     var tweetRecentId = 0
     var tweetOldestId = 0
-    var tweetOffset = 0
+    //var tweetOffset = 0
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -101,7 +101,7 @@ class MainViewController: UIViewController, UITableViewDelegate, UITableViewData
             TwitterClient.sharedInstance?.homeTimeLine(beforeId: self.tweetOldestId, success: success, failure: failure)
         }
         
-        TwitterClient.sharedInstance?.homeTimeLine(success: {(tweets: [Tweet]) in
+        /*TwitterClient.sharedInstance?.homeTimeLine(success: {(tweets: [Tweet]) in
             print ("Tweets fetch successful")
             if(self.tweetOffset > 0) {
                 self.tweets += tweets
@@ -112,7 +112,7 @@ class MainViewController: UIViewController, UITableViewDelegate, UITableViewData
             self.tableView.reloadData()
             }, failure: { (error: Error?) in
                 print("Error in fetching tweets")
-        })
+        })*/
     }
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
@@ -130,6 +130,7 @@ class MainViewController: UIViewController, UITableViewDelegate, UITableViewData
         cell.activityTimestampLabel?.text = tweet.getElapsedTimeString()
         cell.retweetCountLabel?.text = "\(tweet.retweetCount)"
         cell.favoriteCountLabel?.text = "\(tweet.favoriteCount)"
+        cell.replyButton.tag = indexPath.row
         cell.updateTweet = { (updatedTweet: Tweet) in
             self.tweets[indexPath.row] = updatedTweet
             tableView.reloadRows(at: [indexPath], with: .automatic)
@@ -138,6 +139,11 @@ class MainViewController: UIViewController, UITableViewDelegate, UITableViewData
             cell.profileImageView.setImageWith((tweet.user?.profileUrl!)!)
         } else {
             cell.profileImageView.image = nil
+        }
+        if tweet.favorited {
+            cell.favoriteButton.setImage(UIImage(named: "favorited"), for: .selected)
+        } else {
+            cell.favoriteButton.setImage(UIImage(named: "favorite"), for: .normal)
         }
         return cell
     }
@@ -170,17 +176,35 @@ class MainViewController: UIViewController, UITableViewDelegate, UITableViewData
     // MARK: - Navigation
 
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        if(segue.identifier == "composeTweetSegue") {
-            //let composeController = segue.destination as! ComposeViewController
-        } else if (segue.identifier == "tweetDetailSegue") {
-            let cell = sender as! TweetTableViewCell
-            if let indexPath = self.tableView.indexPath(for: cell) {
-                let detailsController = segue.destination as! DetailViewController
-                let tweet = self.tweets[indexPath.row] as Tweet
-                detailsController.tweet = tweet
-                self.tableView.deselectRow(at: indexPath, animated: true)
+        
+            if(segue.identifier == "composeTweetSegue") {
+                let composeController = segue.destination as! ComposeViewController
+                composeController.composeMode = .tweet
+                composeController.addTweet = { (tweet: Tweet) in
+                    self.tweets.insert(tweet, at: 0)
+                    self.tweetRecentId = self.tweets[0].id
+                    self.tableView.reloadData()
+                }
+            } else if(segue.identifier == "composeReplySegue") {
+                let composeController = segue.destination as! ComposeViewController
+                composeController.composeMode = .reply
+                let button = sender as! UIButton
+                composeController.replyToTweet = self.tweets[button.tag]
+                composeController.addTweet = { (tweet: Tweet) in
+                    self.tweets.insert(tweet, at: 0)
+                    self.tweetRecentId = self.tweets[0].id
+                    self.tableView.reloadData()
+                }
+            } else if (segue.identifier == "tweetDetailSegue") {
+                let cell = sender as! TweetTableViewCell
+                if let indexPath = self.tableView.indexPath(for: cell) {
+                    let detailsController = segue.destination as! DetailViewController
+                    let tweet = self.tweets[indexPath.row] as Tweet
+                    detailsController.tweet = tweet
+                    self.tableView.deselectRow(at: indexPath, animated: true)
+                }
             }
-        }
+    
     }
  
 
