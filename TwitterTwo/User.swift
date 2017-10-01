@@ -12,14 +12,15 @@ class User: NSObject {
     var id: Int
     var name: String?
     var screenName: String?
+    var desc: String?
     var profileUrl: URL?
-    //let followers: [User]
+    var createdAt: String?
     var followersCount: Int?
-    //let following: [User]
     var followingCount: Int?
     var tweetsCount: Int?
     var favoritesCount: Int?
     var userDictionary: NSDictionary?
+    static let formatter = DateFormatter()
     
     init(dictionary: NSDictionary) {
         userDictionary = dictionary
@@ -27,6 +28,7 @@ class User: NSObject {
         id = dictionary["id"] as! Int
         name = dictionary["name"] as? String
         screenName = dictionary["screen_name"] as? String
+        desc = dictionary["description"] as? String
         followersCount = dictionary["followers_count"] as? Int
         followingCount = dictionary["friends_count"] as? Int
         tweetsCount = dictionary["statuses_count"] as? Int
@@ -36,6 +38,13 @@ class User: NSObject {
             profileUrl = URL(string: profileUrlString)
         } else {
             profileUrl = nil
+        }
+        let timeString = dictionary["created_at"] as? String
+        if let timeString = timeString {
+            User.formatter.dateFormat = "EEE MMM d HH:mm:ss Z y"
+            let ts = User.formatter.date(from: timeString)
+            User.formatter.dateFormat = "MMM d YYYY"
+            createdAt = User.formatter.string(from: ts!)
         }
     }
     

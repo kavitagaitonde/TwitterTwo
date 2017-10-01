@@ -178,6 +178,13 @@ class MainViewController: UIViewController, UITableViewDelegate, UITableViewData
                     }
                     self.tableView.deselectRow(at: indexPath, animated: true)
                 }
+            } else if (segue.identifier == "meSegue") {
+                //try to get the latest user object
+                TwitterClient.sharedInstance?.userCredentials(success: {(user: User) in
+                    User.currentUser = user
+                }, failure: {(error: Error?) in
+                    //do nothing, use the existing instance
+                })
             }
     
     }
