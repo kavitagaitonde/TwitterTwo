@@ -2,7 +2,7 @@
 
 **TwitterTwo** is a basic twitter app to read and compose tweets from the [Twitter API](https://apps.twitter.com/).
 
-Time spent: **7** hours spent in total
+Time spent: **21** hours spent in total
 
 ## User Stories
 
@@ -19,20 +19,22 @@ The following **required** functionality is completed:
 The following **optional** features are implemented:
 
 - [X] When composing, you should have a countdown in the upper right for the tweet limit.
-- [ ] After creating a new tweet, a user should be able to view it in the timeline immediately without refetching the timeline from the network.
-- [ ] Retweeting and favoriting should increment the retweet and favorite count.
-- [ ] User should be able to unretweet and unfavorite and should decrement the retweet and favorite count.
-- [ ] Replies should be prefixed with the username and the reply_id should be set when posting the tweet,
+- [X] After creating a new tweet, a user should be able to view it in the timeline immediately without refetching the timeline from the network.
+- [X] Retweeting and favoriting should increment the retweet and favorite count.
+- [X] User should be able to unretweet and unfavorite and should decrement the retweet and favorite count.
+- [X] Replies should be prefixed with the username and the reply_id should be set when posting the tweet,
 - [X] User can load more tweets once they reach the bottom of the feed using infinite loading similar to the actual Twitter client.
 
 The following **additional** features are implemented:
 
 - [X] If you are out of ideas on what to tweet, the app will let you select a quotable quote from https://www.brainyquote.com/quotes/topics/topic_inspirational.html that you can add to the compose view.
+- [X] Added a view to show the details about the authenticated user like total tweets, likes, followers and following.
+- [X] Added ability to allow user to Untweet right after user tweets.
 
 Please list two areas of the assignment you'd like to **discuss further with your peers** during the next class (examples include better ways to implement something, how to extend your app in certain ways, etc):
 
-1.
-2.
+1. Better ways of storing Views that will be used in several different controllers.
+2. 
 
 ## Video Walkthrough
 
