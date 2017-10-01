@@ -74,11 +74,14 @@ class Tweet: NSObject {
         case 2:
             return "\(times[0])m"
         case 3:
-            if Int(times[0])! >= 24 {
+            var ts = times[0]
+            //do this in case a very old tweet shows up
+            ts = ts.replacingOccurrences(of: ",", with: "")
+            if Int(ts)! >= 24 {
                 Tweet.formatter.dateFormat = Tweet.shortDateFormat
                 return Tweet.formatter.string(from: timestamp!)
             } else {
-                return "\(times[0])h"
+                return "\(ts)h"
             }
         default:
             return ""
