@@ -14,7 +14,7 @@ The following **required** functionality is completed:
 - [X] In the home timeline, user can view tweet with the user profile picture, username, tweet text, and timestamp.  In other words, design the custom cell with the proper Auto Layout settings.  You will also need to augment the model classes.
 - [X] User can pull to refresh.
 - [X] User can compose a new tweet by tapping on a compose button.
-- [] User can tap on a tweet to view it, with controls to retweet, favorite, and reply.
+- [X] User can tap on a tweet to view it, with controls to retweet, favorite, and reply.
 
 The following **optional** features are implemented:
 
@@ -29,24 +29,23 @@ The following **additional** features are implemented:
 
 - [X] If you are out of ideas on what to tweet, the app will let you select a quotable quote from https://www.brainyquote.com/quotes/topics/topic_inspirational.html that you can add to the compose view.
 - [X] Added a view to show the details about the authenticated user like total tweets, likes, followers and following.
-- [X] Added ability to allow user to Untweet right after user tweets.
+- [X] Allow user to Untweet right after user tweets in the Compose view.
 
 Please list two areas of the assignment you'd like to **discuss further with your peers** during the next class (examples include better ways to implement something, how to extend your app in certain ways, etc):
 
-1. Better ways of storing Views that will be used in several different controllers.
-2. 
+1. Better ways of storing Views that will be used in several different controllers, especially when the same components are used but slightly magnified or minimized. 
 
 ## Video Walkthrough
 
 Here's a walkthrough of implemented user stories:
 
-<img src='http://i.imgur.com/link/to/your/gif/file.gif' title='Video Walkthrough' width='' alt='Video Walkthrough' />
+<img src='https://i.imgur.com/HHIUwkj.gif' title='Video Walkthrough' width='' alt='Video Walkthrough' />
 
 GIF created with [LiceCap](http://www.cockos.com/licecap/).
 
 ## Notes
 
-Describe any challenges encountered while building the app.
+Twitter api documentation isn't very good, had to figure out stuff while testing.
 
 ## License
 
