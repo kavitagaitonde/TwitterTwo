@@ -126,7 +126,7 @@ class TwitterClient: BDBOAuth1SessionManager {
     }
     
     func getTweet (tweetId: Int, success: @escaping (Tweet) -> (),  failure: @escaping (Error) -> ()) {
-        post("1.1/statuses/show.json", parameters: nil, progress: nil
+        get("1.1/statuses/show.json", parameters: ["id": tweetId], progress: nil
             , success: { (task: URLSessionDataTask?, response: Any?) in
                 let tweet = Tweet(dictionary: response as! NSDictionary)
                 print("Success getting tweet - \(tweet)")

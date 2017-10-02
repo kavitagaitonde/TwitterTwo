@@ -90,10 +90,10 @@ class TweetTableViewCell: UITableViewCell, TTTAttributedLabelDelegate{
             })
         } else {
             TwitterClient.sharedInstance?.retweet(tweetId: (tweet?.id)!, success: {(tweet: Tweet) -> () in
-                print ("success favoriting")
+                print ("success retweeting")
                 self.updateTweet(tweet)
             }, failure: { (error: Error) in
-                print ("error favoriting")
+                print ("error retweeting")
             })
         }
     }
